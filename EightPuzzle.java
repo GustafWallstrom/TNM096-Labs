@@ -99,7 +99,7 @@ public class EightPuzzle {
             //b.f = b.h + b.g;
 
             //h2
-            b.f = 0;
+            b.f = b.g;
             for(int j = 1; j < b.getTiles().size(); j++){
 
                b.f += manhattan(b.getTileIndex(0), b.getTileIndex(j));
@@ -109,9 +109,6 @@ public class EightPuzzle {
                openList.add(b);
             }
          }
-         
        }
-
-       
     }
  }
