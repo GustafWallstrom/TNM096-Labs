@@ -4,7 +4,7 @@ public class TileBoard {
 
     private final List<Tile> tiles;
     int right, left, up, down;
-    public int h;
+    public int h, f, g;
 
     public TileBoard(final List<Tile> t){
         tiles = new ArrayList<Tile>();
@@ -12,6 +12,7 @@ public class TileBoard {
             tiles.add(t.get(i));
 
         h = tilesOutOfPlace();
+        f = h + g;
     }
 
     public TileBoard(){
@@ -135,8 +136,6 @@ public class TileBoard {
 
     public int tilesOutOfPlace(){
         int h = 0; 
-
-        if(this.getTiles().get(8).getValue() != 0) h++;
 
         for(int i = 0; i < tiles.size() - 1; i++)
             if(this.getTiles().get(i).getValue() != (i + 1)) h++;

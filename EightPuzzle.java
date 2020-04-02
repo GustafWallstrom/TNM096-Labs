@@ -7,71 +7,109 @@ import java.util.*;
 
 public class EightPuzzle {
 
+   /**DECLARE VARIABLES */
+
     static TileBoard startBoard;
     static TileBoard endBoard;
-    static TileBoard currentBoard;
+    static TileBoard currentTileBoard;
+    private static final int SIZE = 100;
 
-    public static TileBoard newCurrentBoard(Tile temp) {
+   /** FUCTIONS */
+    public static TileBoard newcurrentTileBoard(Tile temp) {
 
-       List<Tile> tempList = new ArrayList<Tile>(currentBoard.getTiles());
-       Collections.swap(tempList, currentBoard.getTileIndex(temp.getValue()), currentBoard.getTileIndex(0));
+       List<Tile> tempList = new ArrayList<Tile>(currentTileBoard.getTiles());
+       Collections.swap(tempList, currentTileBoard.getTileIndex(temp.getValue()), currentTileBoard.getTileIndex(0));
 
        return new TileBoard(tempList);
     };
+
+    static int manhattan(int a, int b){
+       return Math.abs(a/3 - b/3) + Math.abs(a % 3 - b % 3);
+    }
+
+      //A queue which sorts the TileBoards after the lowest value of h(s), the estimated cost function.
+    static PriorityQueue<TileBoard> openList = new PriorityQueue<TileBoard>(SIZE, new Comparator<TileBoard>() {
+       @Override
+       public int compare(TileBoard t1, TileBoard t2) {
+          return (t1.f - t2.f);
+       }              
+    });
+
+    static HashSet<TileBoard> closedList = new HashSet<TileBoard>();
 
     public static void main(final String[] args) {
 
        /** INITIALIZE */
 
        final List<Tile> start = new ArrayList<Tile>();
-       PriorityQueue<TileBoard> tileBoardQueue = new PriorityQueue<TileBoard>(){
-
-          private static final long serialVersionUID = 1L;
-
-          @Overload Comparable (TileBoard t1, TileBoard t2){
-             return (t)
-          }
-
-       };
-
-       start.add(new Tile(1));
-       start.add(new Tile(5));
-       start.add(new Tile(4));
+      /*
+       start.add(new Tile(7));
        start.add(new Tile(2));
+       start.add(new Tile(4));
+       start.add(new Tile(5));
+       start.add(new Tile(0));
+       start.add(new Tile(6));
        start.add(new Tile(8));
        start.add(new Tile(3));
+       start.add(new Tile(1));
+      */
+       
+       start.add(new Tile(1));
+       start.add(new Tile(2));
+       start.add(new Tile(3));
        start.add(new Tile(4));
+       start.add(new Tile(5));
        start.add(new Tile(6));
+       start.add(new Tile(7));
        start.add(new Tile(0));
+       start.add(new Tile(8));
 
        startBoard = new TileBoard(start);
        endBoard = new TileBoard();
-       currentBoard = startBoard;
-       tileBoardQueue.add(currentBoard);
+
+       openList.add(startBoard);
+       closedList.add(startBoard);
 
        /** RUN */
 
        System.out.println("\nGoal: ");
        endBoard.printTiles();
 
-       System.out.println("\nStart Board:");
+       System.out.println("\nStart Board with h = " + startBoard.h + " : ");
        startBoard.printTiles();
 
-       System.out.println("\nNumber of tiles out of place: " + startBoard.h);
+       while(!openList.isEmpty()){
 
-       System.out.println("\nThese tiles can be moved: ");
-       for (int i = 0; i < startBoard.getMovableTiles().size(); i++)
-          System.out.print(startBoard.getMovableTiles().get(i).getValue() + " ");
-      
-       System.out.println(" ");
+         currentTileBoard = openList.poll();
+         closedList.add(currentTileBoard);
 
-       List<Tile> neighbours = currentBoard.getMovableTiles();
+         if(currentTileBoard.h == 0){
+            System.out.println("\nGoal reached");
+            System.out.println("Number of slides, g(s) = " + currentTileBoard.g);
 
-       for(int i = 0; i < neighbours.size(); i++){
-          TileBoard b = newCurrentBoard(neighbours.get(i));
-          System.out.println("\nCurrent Board with h: " +  b.h + " is :");
-          b.printTiles();
-          tileBoardQueue.add(b);
+            return;
+         }
+         List<Tile> neighbours = currentTileBoard.getMovableTiles();
+
+         for(int i = 0; i < neighbours.size(); i++){
+            TileBoard b = newcurrentTileBoard(neighbours.get(i));
+            b.g = currentTileBoard.g + 1;
+            
+            //h1
+            //b.f = b.h + b.g;
+
+            //h2
+            b.f = 0;
+            for(int j = 1; j < b.getTiles().size(); j++){
+
+               b.f += manhattan(b.getTileIndex(0), b.getTileIndex(j));
+            }
+
+            if(b != null && !closedList.contains(b)){
+               openList.add(b);
+            }
+         }
+         
        }
 
        
