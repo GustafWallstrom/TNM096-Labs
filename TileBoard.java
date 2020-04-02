@@ -4,11 +4,14 @@ public class TileBoard {
 
     private final List<Tile> tiles;
     int right, left, up, down;
+    public int h;
 
     public TileBoard(final List<Tile> t){
         tiles = new ArrayList<Tile>();
         for(int i = 0; i < t.size(); i++)
             tiles.add(t.get(i));
+
+        h = tilesOutOfPlace();
     }
 
     public TileBoard(){
@@ -22,6 +25,8 @@ public class TileBoard {
         tiles.add(new Tile(7));
         tiles.add(new Tile(8));
         tiles.add(new Tile(0));
+
+        h = 0;
     }
 
     public List<Tile> getTiles(){
@@ -62,6 +67,8 @@ public class TileBoard {
         int zeroPos = getTileIndex(0);
 
         switch(zeroPos){
+            //Set left, right, up, down to -1 if it´s outside the border
+            //else set to index of the neighbour
             case 0:
                 left = -1;
                 right = zeroPos + 1;
@@ -118,6 +125,11 @@ public class TileBoard {
                 break;
         }
 
+        for(int i = 0; i < tiles.size(); i++){
+            if(i == right || i == left || i == down || i == up)
+                neighbours.add(tiles.get(i));
+        }
+
         return neighbours;
     }
 
@@ -128,6 +140,8 @@ public class TileBoard {
 
         for(int i = 0; i < tiles.size() - 1; i++)
             if(this.getTiles().get(i).getValue() != (i + 1)) h++;
+
         return h;
-      }
+    }
 }
+       
