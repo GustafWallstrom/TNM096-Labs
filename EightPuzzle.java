@@ -42,27 +42,32 @@ public class EightPuzzle {
        /** INITIALIZE */
 
        final List<Tile> start = new ArrayList<Tile>();
+      
+       //Medium difficulty from Emlira
+      
+       start.add(new Tile(7));
+       start.add(new Tile(2));
+       start.add(new Tile(4));
+       start.add(new Tile(5));
+       start.add(new Tile(0));
+       start.add(new Tile(6));
+       start.add(new Tile(8));
+       start.add(new Tile(3));
+       start.add(new Tile(1));
+
+       //Easy
+      
       /*
-       start.add(new Tile(7));
-       start.add(new Tile(2));
-       start.add(new Tile(4));
-       start.add(new Tile(5));
        start.add(new Tile(0));
-       start.add(new Tile(6));
-       start.add(new Tile(8));
-       start.add(new Tile(3));
        start.add(new Tile(1));
-      */
-       
-       start.add(new Tile(1));
-       start.add(new Tile(2));
        start.add(new Tile(3));
        start.add(new Tile(4));
-       start.add(new Tile(5));
+       start.add(new Tile(2));
        start.add(new Tile(6));
        start.add(new Tile(7));
-       start.add(new Tile(0));
+       start.add(new Tile(5));
        start.add(new Tile(8));
+       */
 
        startBoard = new TileBoard(start);
        endBoard = new TileBoard();
@@ -78,6 +83,9 @@ public class EightPuzzle {
        System.out.println("\nStart Board with h = " + startBoard.h + " : ");
        startBoard.printTiles();
 
+      long startTime = System.currentTimeMillis();
+      
+      //Search loop
        while(!openList.isEmpty()){
 
          currentTileBoard = openList.poll();
@@ -86,11 +94,13 @@ public class EightPuzzle {
          if(currentTileBoard.h == 0){
             System.out.println("\nGoal reached");
             System.out.println("Number of slides, g(s) = " + currentTileBoard.g);
+            System.out.println("Time (s): " + (System.currentTimeMillis() - startTime)/1000.0);
 
             return;
          }
-         List<Tile> neighbours = currentTileBoard.getMovableTiles();
 
+         //Create all possible TileBoards for the next move
+         List<Tile> neighbours = currentTileBoard.getMovableTiles();
          for(int i = 0; i < neighbours.size(); i++){
             TileBoard b = newcurrentTileBoard(neighbours.get(i));
             b.g = currentTileBoard.g + 1;
@@ -102,9 +112,10 @@ public class EightPuzzle {
             b.f = b.g;
             for(int j = 1; j < b.getTiles().size(); j++){
 
-               b.f += manhattan(b.getTileIndex(0), b.getTileIndex(j));
+               b.f += manhattan(b.getTileIndex(j), endBoard.getTileIndex(j));
             }
 
+            // Add to open list if it does not appear in closed list.
             if(b != null && !closedList.contains(b)){
                openList.add(b);
             }
