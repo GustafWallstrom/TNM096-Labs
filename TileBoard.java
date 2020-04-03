@@ -1,18 +1,20 @@
 import java.util.*;
 
+//javac EightPuzzle.java && java EightPuzzle
+
 public class TileBoard {
 
     private final List<Tile> tiles;
     int right, left, up, down;
     public int h, f, g;
+    public List<String> moves;
 
     public TileBoard(final List<Tile> t){
         tiles = new ArrayList<Tile>();
-        for(int i = 0; i < t.size(); i++)
+        for(int i = 0; i < t.size(); i++){
             tiles.add(t.get(i));
-
-        h = tilesOutOfPlace();
-        f = h + g;
+        }
+        moves = new ArrayList<String>();
     }
 
     public TileBoard(){
@@ -26,7 +28,8 @@ public class TileBoard {
         tiles.add(new Tile(7));
         tiles.add(new Tile(8));
         tiles.add(new Tile(0));
-
+        
+        moves = new ArrayList<String>();
         h = 0;
     }
 
@@ -47,6 +50,10 @@ public class TileBoard {
         }
     }
 
+    static int manhattan(int a, int b){
+        return Math.abs(a/3 - b/3) + Math.abs(a % 3 - b % 3);
+    }
+
     public Tile getTileByValue(final int v){
         for(int i = 0; i < tiles.size(); i++){
             if(v == tiles.get(i).getValue()) return tiles.get(i);
@@ -60,6 +67,28 @@ public class TileBoard {
         }
         return -1;
     }
+
+    public int getF(){
+		return (g + h);
+    }
+    
+	public int getH(){
+		return h;
+    }
+    
+	public int getG(){
+		return g;
+    }
+    
+	public void setG(int val){
+        g = val;
+        f = g + h;
+    }
+    
+	public void setH(int val){
+        h = val;
+        f = g + h;
+	}
 
     public List<Tile> getMovableTiles(){
 
@@ -130,7 +159,7 @@ public class TileBoard {
             if(i == right || i == left || i == down || i == up)
                 neighbours.add(tiles.get(i));
         }
-
+        
         return neighbours;
     }
 
@@ -142,5 +171,18 @@ public class TileBoard {
 
         return h;
     }
+
+@Override
+	  public boolean equals(Object o) {
+	    if (this == o) return true;
+	    if (o == null || getClass() != o.getClass()) return false;
+
+	    TileBoard board = (TileBoard) o;
+	    return Arrays.equals(tiles.toArray(new Tile[tiles.size()]), board.getTiles().toArray(new Tile[board.getTiles().size()]));
+	  }
+	  
+@Override
+	  public int hashCode() {
+	    return Arrays.hashCode(tiles.toArray(new Tile[tiles.size()]));
+	  }
 }
-       
