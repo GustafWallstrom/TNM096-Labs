@@ -27,4 +27,4 @@ print "Solution: ", sol[5:len(sol)-1]
 # 3. Print time elapsed
 end = time()
 elapsed = end-start
-print "\nElapsed time ",  secondsToStr(elapsed)[0:15]
+print "\nElapsed time ",  secondsToStr(elapsed)[0:15], "\n"
